@@ -51,11 +51,6 @@ void WorldEditor::Update(const sf::RenderWindow& window, const sf::View& camera,
         if (targetType == TileType:: Wall && gridX == player.GetGridX() && gridY == player.GetGridY())  {
             return;
         }
+        map.setTile(gridX, gridY, targetType, true);
     }
-    if (targetType == TileType::Wall && gridX == player.GetGridX() && gridY == player.GetGridY()) {
-        return;
-    }
-
-    map.setTile(gridX, gridY, targetType);
-    map.UpdateGeometry();
 }

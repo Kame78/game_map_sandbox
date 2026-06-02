@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
+#include "chunk.hpp"
 
 enum class TileType : char {
     Floor = '.',
@@ -13,18 +14,21 @@ class Map : public sf::Drawable {
 private:
     int m_width{0};
     int m_height{0};
-    std::vector<TileType> m_grid;
+    
+    static constexpr int CHUNK_SIZE = 16;
+    static constexpr int TILE_SIZE = 32;
 
-    const int TILE_SIZE = 32;
+    int m_numChunksX{0};
+    int m_numChunksY{0};
 
-    sf::VertexArray m_floorVertices;
-    sf::VertexArray m_wallVertices;
+    std::vector<Chunk> m_chunks;
 
     sf::Texture m_grassTexture;
     sf::Texture m_wallTexture;
 
 public:
     Map(int width, int height);
+
     void Randomize(int fillPercentage);
     void StepSimulation();
     int CountActiveNeighbors(int x, int y) const;
@@ -38,10 +42,11 @@ public:
     void LoadFromFile(const std::string& filepath, int& outPlayerX, int& outPlayerY);
 
     bool LoadTextures(const std::string& grassPath, const std::string& wallPath);
-    void UpdateGeometry();
+
+    void UpdateAllGeometry();
 
     TileType getTile(int x, int y) const;
-    void setTile(int x, int y, TileType type);
+    void setTile(int x, int y, TileType type, bool updateGeometry = true);
 
 protected:
     virtual void draw(sf::RenderTarget& target, const sf::RenderStates states) const override;
