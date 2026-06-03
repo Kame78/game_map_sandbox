@@ -1,0 +1,144 @@
+{
+  "engine_config": {
+    "base_tile_size": 32,
+    "sub_tile_size": 16
+  },
+  "sheets": [
+    {
+      "file_path": "assets/textures/tilesets/earth.png",
+      "type": "terrain_autotile",
+      "sheet_width": 576,
+      "sheet_height": 1024,
+      "block_width": 288,
+      "block_height": 256,
+      "blocks": [
+        {
+          "id": "dark_coarse_dirt",
+          "start_x": 0,
+          "start_y": 0,
+          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "dirt" }
+        },
+        {
+          "id": "medium_coarse_dirt",
+          "start_x": 288,
+          "start_y": 0,
+          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "dirt" }
+        },
+        {
+          "id": "charcoal_earth",
+          "start_x": 0,
+          "start_y": 256,
+          "properties": { "is_solid": false, "speed_modifier": 0.9, "footstep_type": "gravel" }
+        },
+        {
+          "id": "clay_mud",
+          "start_x": 288,
+          "start_y": 256,
+          "properties": { "is_solid": false, "speed_modifier": 0.5, "footstep_type": "mud" }
+        },
+        {
+          "id": "pale_sand",
+          "start_x": 0,
+          "start_y": 512,
+          "properties": { "is_solid": false, "speed_modifier": 0.7, "footstep_type": "sand" }
+        },
+        {
+          "id": "tan_dry_dirt",
+          "start_x": 288,
+          "start_y": 512,
+          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "dirt" }
+        },
+        {
+          "id": "bronze_clay",
+          "start_x": 0,
+          "start_y": 768,
+          "properties": { "is_solid": false, "speed_modifier": 0.9, "footstep_type": "dirt" }
+        },
+        {
+          "id": "rich_brown_loam",
+          "start_x": 288,
+          "start_y": 768,
+          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "grass" }
+        }
+      ]
+    },
+    {
+      "file_path": "assets/textures/tilesets/grass_medium.png",
+      "type": "terrain_autotile",
+      "sheet_width": 864,
+      "sheet_height": 416,
+      "block_width": 288,
+      "block_height": 256,
+      "blocks": [
+        {
+          "id": "medium_grass_thick_hedges",
+          "start_x": 0,
+          "start_y": 96,
+          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "grass" }
+        },
+        {
+          "id": "medium_grass_standard",
+          "start_x": 288,
+          "start_y": 96,
+          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "grass" }
+        },
+        {
+          "id": "medium_grass_bushy_edges",
+          "start_x": 576,
+          "start_y": 96,
+          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "grass" }
+        }
+      ]
+    },
+    {
+      "file_path": "assets/textures/tilesets/stone.png",
+      "type": "full_47_autotile",
+      "sheet_width": 272,
+      "sheet_height": 320,
+      "block_width": 272,
+      "block_height": 160,
+      "blocks": [
+        {
+          "id": "chiseled_stone_dark_edges",
+          "start_x": 0,
+          "start_y": 0,
+          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "stone" }
+        },
+        {
+          "id": "smooth_stone_cobble",
+          "start_x": 0,
+          "start_y": 160,
+          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "stone" }
+        }
+      ]
+    },
+    {
+      "file_path": "assets/textures/tilesets/water.png",
+      "type": "terrain_autotile",
+      "sheet_width": 96,
+      "sheet_height": 192,
+      "block_width": 96,
+      "block_height": 64,
+      "blocks": [
+        {
+          "id": "water_shallow_shore",
+          "start_x": 0,
+          "start_y": 0,
+          "properties": { "is_solid": false, "is_swimmable": true, "depth_level": 1, "footstep_type": "wade" }
+        },
+        {
+          "id": "water_medium_depth",
+          "start_x": 0,
+          "start_y": 64,
+          "properties": { "is_solid": false, "is_swimmable": true, "depth_level": 2, "footstep_type": "splash" }
+        },
+        {
+          "id": "water_deep_ocean",
+          "start_x": 0,
+          "start_y": 128,
+          "properties": { "is_solid": true, "is_swimmable": false, "depth_level": 3, "footstep_type": "none" }
+        }
+      ]
+    }
+  ]
+}

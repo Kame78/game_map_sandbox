@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(SFML 3.0.0 REQUIRED COMPONENTS Graphics Window System)
+find_package(nlohmann_json 3.11.2 REQUIRED)
+
 
 add_executable(WorldRenderer
 src/main.cpp
@@ -13,6 +15,7 @@ src/map.cpp
 src/player.cpp
 src/world_editor.cpp
 src/chunk.cpp
+src/map_renderer.cpp
 )
 
 target_include_directories(WorldRenderer PRIVATE
@@ -23,6 +26,7 @@ target_link_libraries(WorldRenderer PRIVATE
 SFML::Graphics
 SFML::Window
 SFML::System
+nlohmann_json::nlohmann_json
 )
 
 add_custom_command(TARGET WorldRenderer POST_BUILD
