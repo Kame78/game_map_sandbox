@@ -1,5 +1,7 @@
 #include "player.hpp"
 #include "map.hpp"
+#include "tile_registry.hpp"
+
 
 Player::Player() {
     m_shape.setFillColor(sf::Color::Red);
@@ -24,7 +26,8 @@ void Player::HandleInput(const sf::Event& event, const Map& map) {
         if(keyEvent->code == sf::Keyboard::Key::A || keyEvent->code == sf::Keyboard::Key::Left) nextX--;
         if(keyEvent->code == sf::Keyboard::Key::D || keyEvent->code == sf::Keyboard::Key::Right) nextX++;
 
-        if(map.getTile(nextX, nextY) == TileType::Floor) {
+        TileRuntimeId targetTileId = map.GetTile(nextX, nextY);
+        if(!TileRegistry::Instance().GetProperties(targetTileId).isSolid) {
             m_gridX = nextX;
             m_gridY = nextY;
         }

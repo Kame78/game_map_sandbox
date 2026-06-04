@@ -1,9 +1,9 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include <vector>
+#include <cstdint>
 
-enum class TileType : char;
+using TileRuntimeId = uint16_t;
 
 class Chunk {
 private:
@@ -12,19 +12,14 @@ private:
     int m_chunkSize;
     int m_tileSize;
 
-    std::vector<TileType> m_localGrid;
-
-    sf::VertexArray m_floorVerticies;
-    sf::VertexArray m_wallVerticies;
+    std::vector<TileRuntimeId> m_localGrid;
 
 public:
     Chunk(int chunkX, int chunkY, int chunkSize, int tileSize);
 
-    const sf::VertexArray& GetFloorVerticies() const { return m_floorVerticies; }
-    const sf::VertexArray& GetWallVerticies() const { return m_wallVerticies; }
+    TileRuntimeId GetTile(int localX, int localY) const;
+    void SetTile(int localX, int localY, TileRuntimeId type);
 
-    TileType GetTile(int localX, int localY) const;
-    void SetTile(int localX, int localY, TileType type);
-
-    void UpdateGeometry(int mapWidth, int mapHeight);
+    int GetChunkX() const {return m_chunkX;}
+    int GetChunkY() const {return m_chunkY;}
 };

@@ -1,4 +1,5 @@
 #include "world_editor.hpp"
+#include "tile_registry.hpp"
 #include <iostream>
 
 void WorldEditor::HandleEvent(const sf::Event& event, const sf::RenderWindow& window, const sf::View& camera, Map& map, Player& player) {
@@ -45,12 +46,16 @@ void WorldEditor::Update(const sf::RenderWindow& window, const sf::View& camera,
     if (gridX < 0 || gridX >= map.GetWidth() || gridY < 0 || gridY >= map.GetHeight()) {
         return;
     }
-    TileType targetType = (m_currentMode == EditMode::PaintWall) ? TileType::Wall : TileType::Floor;
 
-    if (map.getTile(gridX, gridY) != targetType) {
-        if (targetType == TileType:: Wall && gridX == player.GetGridX() && gridY == player.GetGridY())  {
+    TileRuntimeId targetType = (m_currentMode == EditMode::PaintWall)
+     ? TileRegistry::Instance().GetId("chiseled_stone_dark_edges")
+     : TileRegistry::Instance().GetId("medium_grass_standard");
+
+
+    if (map.GetTile(gridX, gridY) != targetType) {
+        if (TileRegistry::Instance().GetProperties(targetType).isSolid && gridX == player.GetGridX() && gridY == player.GetGridY())  {
             return;
         }
-        map.setTile(gridX, gridY, targetType, true);
+        map.SetTile(gridX, gridY, targetType);
     }
 }

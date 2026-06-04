@@ -16,6 +16,7 @@ src/player.cpp
 src/world_editor.cpp
 src/chunk.cpp
 src/map_renderer.cpp
+src/tile_registry.cpp
 )
 
 target_include_directories(WorldRenderer PRIVATE

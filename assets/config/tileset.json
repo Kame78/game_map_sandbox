@@ -5,7 +5,7 @@
   },
   "sheets": [
     {
-      "file_path": "assets/textures/tilesets/earth.png",
+      "file_path": "assets/tilesets/earth.png",
       "type": "terrain_autotile",
       "sheet_width": 576,
       "sheet_height": 1024,
@@ -63,7 +63,7 @@
       ]
     },
     {
-      "file_path": "assets/textures/tilesets/grass_medium.png",
+      "file_path": "assets/tilesets/grass_medium.png",
       "type": "terrain_autotile",
       "sheet_width": 864,
       "sheet_height": 416,
@@ -91,7 +91,7 @@
       ]
     },
     {
-      "file_path": "assets/textures/tilesets/stone.png",
+      "file_path": "assets/tilesets/stone.png",
       "type": "full_47_autotile",
       "sheet_width": 272,
       "sheet_height": 320,
@@ -113,7 +113,7 @@
       ]
     },
     {
-      "file_path": "assets/textures/tilesets/water.png",
+      "file_path": "assets/tilesets/water.png",
       "type": "terrain_autotile",
       "sheet_width": 96,
       "sheet_height": 192,

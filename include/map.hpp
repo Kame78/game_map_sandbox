@@ -1,16 +1,11 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
+#include <cstdint>
 #include "chunk.hpp"
 
-enum class TileType : char {
-    Floor = '.',
-    Wall = '#'
-};
-
-class Map : public sf::Drawable {
+class Map {
 private:
     int m_width{0};
     int m_height{0};
@@ -23,9 +18,6 @@ private:
 
     std::vector<Chunk> m_chunks;
 
-    sf::Texture m_grassTexture;
-    sf::Texture m_wallTexture;
-
 public:
     Map(int width, int height);
 
@@ -35,19 +27,21 @@ public:
 
     int GetWidth() const{ return m_width; }
     int GetHeight() const{ return m_height; }
+    int GetChunkSize() const {return CHUNK_SIZE;}
+    int GetTileSize() const {return TILE_SIZE;}
+    int GetNumChunksX() const {return m_numChunksX;}
+    int GetNumChunksY() const {return m_numChunksY;}
+
 
     void PrintToConsole() const;
-
     void SaveToFile(const std::string& filepath, int playerX, int playerY) const;
     void LoadFromFile(const std::string& filepath, int& outPlayerX, int& outPlayerY);
 
-    bool LoadTextures(const std::string& grassPath, const std::string& wallPath);
 
-    void UpdateAllGeometry();
 
-    TileType getTile(int x, int y) const;
-    void setTile(int x, int y, TileType type, bool updateGeometry = true);
+    TileRuntimeId GetTile(int x, int y) const;
+    void SetTile(int x, int y, TileRuntimeId typeId);
 
-protected:
-    virtual void draw(sf::RenderTarget& target, const sf::RenderStates states) const override;
+    const Chunk& GetChunk(int cx, int cy) const {return m_chunks[cy * m_numChunksX + cx];}
+
 };

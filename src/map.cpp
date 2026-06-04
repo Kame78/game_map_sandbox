@@ -1,4 +1,5 @@
 #include "map.hpp"
+#include "tile_registry.hpp"
 #include <iostream>
 #include <stdexcept>
 #include <random>
@@ -19,91 +20,46 @@ Map::Map(int width, int height)
     }
 }
        
-bool Map::LoadTextures(const std::string &grassPath, const std::string& wallPath) {
-    if (!m_grassTexture.loadFromFile(grassPath) || !m_wallTexture.loadFromFile(wallPath)) {
-        return false;
-    }
-    return true;
-}
-
-void Map::UpdateAllGeometry() {
-    for (auto& chunk : m_chunks) {
-        chunk.UpdateGeometry(m_width, m_height);
-    }
-}
-
-void Map::draw(sf::RenderTarget& target, const sf::RenderStates states) const {
-    sf::RenderStates floorStates = states;
-    floorStates.texture = &m_grassTexture;
-    for (const auto& chunk : m_chunks) {
-        target.draw(chunk.GetFloorVerticies(), floorStates);
-    }
-
-    sf::RenderStates wallStates = states;
-    wallStates.texture = &m_wallTexture;
-    for (const auto& chunk : m_chunks) {
-        target.draw(chunk.GetWallVerticies(), wallStates);
-    }
-}
-
- TileType Map::getTile(int x, int y) const {
+ TileRuntimeId Map::GetTile(int x, int y) const {
     if ( x < 0 || x >= m_width || y < 0 || y >= m_height) {
-        return TileType::Wall;
+        return TileRegistry::Instance().GetId("chiseled_stone_dark_edges");
     }
 
     int cx = x / CHUNK_SIZE;
     int cy = y / CHUNK_SIZE;
     int chunkIndex = cy * m_numChunksX + cx;
 
-    int lx = x % CHUNK_SIZE;
-    int ly = y % CHUNK_SIZE;
-
-    return m_chunks[chunkIndex].GetTile(lx, ly);
+    return m_chunks[chunkIndex].GetTile(x % CHUNK_SIZE, y % CHUNK_SIZE);
  }
 
- void Map::setTile(int x, int y, TileType type, bool updateGeometry) {
+ void Map::SetTile(int x, int y, TileRuntimeId typeId) {
     if (x < 0 || x >= m_width || y < 0 || y >= m_height) return;
 
     int cx = x / CHUNK_SIZE;
     int cy = y / CHUNK_SIZE;
-    int chunkIndex = cy * m_numChunksX + cx;
+    
 
-    int lx = x % CHUNK_SIZE;
-    int ly = y % CHUNK_SIZE;
-
-    m_chunks[chunkIndex].SetTile(lx, ly, type);
-
-    if (updateGeometry) {
-        m_chunks[chunkIndex].UpdateGeometry(m_width, m_height);
-    }
+    m_chunks[cy * m_numChunksX + cx].SetTile(x % CHUNK_SIZE, y % CHUNK_SIZE, typeId);
  }
-
- void Map::PrintToConsole() const {
-    for (int y = 0; y < m_height; ++y) {
-        std::string rowString ="";
-        for (int x = 0; x < m_width; ++x) {
-            rowString += static_cast<char>(getTile(x, y));
-        }
-        std::cout << rowString << "\n";
-    }
- }
-
+ 
  void Map::Randomize(int fillPercentage) {
     std::random_device rd;
     std::mt19937 prng(rd());
     std::uniform_int_distribution<int> dist(0, 100);
 
+    TileRuntimeId wallId = TileRegistry::Instance().GetId("chiseled_stone_dark_edges");
+    TileRuntimeId floorId = TileRegistry::Instance().GetId("medium_grass_standard");
+
     for (int y = 0; y < m_height; ++y) {
         for (int x = 0; x < m_width; ++x) {
             if(x == 0 || x == m_width - 1 || y == 0 || y == m_height - 1 ) {
-                setTile(x, y, TileType::Wall);
+                SetTile(x, y, wallId);
             } else{
-                TileType type = (dist(prng) < fillPercentage) ? TileType::Wall : TileType::Floor;
-                setTile(x, y, type, false);
+                TileRuntimeId chosenId = (dist(prng) < fillPercentage) ? wallId : floorId;
+                SetTile(x, y, chosenId);
             }
         }
     }
-    UpdateAllGeometry();
 }
 
 int Map::CountActiveNeighbors(int x, int y) const {
@@ -111,10 +67,10 @@ int Map::CountActiveNeighbors(int x, int y) const {
 
     for (int neighborY = y -1; neighborY <= y + 1; ++neighborY) {
         for (int neighborX = x - 1; neighborX <= x + 1; ++neighborX) {
-            if (neighborX == x && neighborY == y) {
-                continue;
-            }
-            if (getTile(neighborX, neighborY) == TileType::Wall) {
+            if (neighborX == x && neighborY == y) continue;
+
+            TileRuntimeId id = GetTile(neighborX, neighborY);
+            if (TileRegistry::Instance().GetProperties(id).isSolid) {
                 ++wallCount;
             }
         }
@@ -123,29 +79,32 @@ int Map::CountActiveNeighbors(int x, int y) const {
 }
 
 void Map::StepSimulation() {
-    std::vector<TileType> nextGrid(m_width * m_height, TileType::Floor);
+    std::vector<TileRuntimeId> nextGrid(m_width * m_height, 0);
+    TileRuntimeId wallId = TileRegistry::Instance().GetId("chiseled_stone_dark_edges");
+    TileRuntimeId floorId = TileRegistry::Instance().GetId("medium_grass_standard");
+
 
     for (int y = 0; y < m_height; ++y) {
         for (int x = 0; x < m_width; ++x) {
             if ( x == 0 || x == m_width - 1 || y == 0 || y == m_height - 1) {
-                nextGrid[y * m_width + x] = TileType::Wall;
+                nextGrid[y * m_width + x] = wallId;
                 continue;
             }
             int neighbors = CountActiveNeighbors(x, y);
+            bool standsAsSolid = (TileRegistry::Instance().GetProperties(GetTile(x, y)).isSolid);
             
-            if (getTile(x, y) == TileType::Wall) {
-                nextGrid[y * m_width + x] = (neighbors >= 4) ? TileType::Wall : TileType::Floor;
+            if (standsAsSolid) {
+                nextGrid[y * m_width + x] = (neighbors >= 4) ? wallId : floorId;
             } else {
-                nextGrid[y * m_width + x] = (neighbors >= 5) ? TileType::Wall : TileType::Floor;
+                nextGrid[y * m_width + x] = (neighbors >= 5) ? wallId : floorId;
             }
         }
     }
     for (int y = 0; y < m_height; ++y) {
         for (int x = 0; x < m_width; ++x) {
-            setTile(x, y, nextGrid[y * m_width + x], false);
+            SetTile(x, y, nextGrid[y * m_width + x]);
         }
     }
-    UpdateAllGeometry();
 }
 
 void Map::SaveToFile(const std::string& filepath, int playerX, int playerY) const {
@@ -161,8 +120,8 @@ void Map::SaveToFile(const std::string& filepath, int playerX, int playerY) cons
 
     for (int y = 0; y < m_height; ++y) {
         for (int x = 0; x < m_width; ++x) {
-            TileType type = getTile(x, y);
-            out.write(reinterpret_cast<const char*>(&type), sizeof(TileType));
+            TileRuntimeId id = GetTile(x, y);
+            out.write(reinterpret_cast<const char*>(&id), sizeof(TileRuntimeId));
         }
     }
 
@@ -204,9 +163,9 @@ void Map::LoadFromFile(const std::string& filepath, int& outPlayerX, int& outPla
 
     for (int y = 0; y < loadedHeight; ++y) {
         for (int x = 0; x < loadedWidth; ++x) {
-            TileType type;
-            in.read(reinterpret_cast<char*>(&type), sizeof(TileType));
-            setTile(x, y, type, false);
+            TileRuntimeId id;
+            in.read(reinterpret_cast<char*>(&id), sizeof(TileRuntimeId));
+            SetTile(x, y, id);
         }
     }
     
@@ -214,8 +173,6 @@ void Map::LoadFromFile(const std::string& filepath, int& outPlayerX, int& outPla
     in.read(reinterpret_cast<char*>(&outPlayerY), sizeof(outPlayerY));
 
     in.close();
-
-    UpdateAllGeometry();
     std::cout << "Successfully loaded map configuration from " << filepath << "\n";
 }
 
