@@ -8,6 +8,7 @@ class WorldGenerator {
 private:
     void CarveRiverAgent(Map& map, int startX, int startY, TileRuntimeId riverId, const std::vector<double>& elevationGrid);
     void GenerateCrossings(Map& map, int spacingFrequency);
+    void GenerateCliffs(Map& map);
 
 public:
     WorldGenerator() = default;

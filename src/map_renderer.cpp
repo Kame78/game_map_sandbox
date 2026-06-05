@@ -114,7 +114,7 @@ void MapRenderer::RebuildChunkGeometry(int cx, int cy, const Map& map) {
 
             //Gather the core heights of surrounding terrain blocks
 
-            int pN = TileRegistry::Instance().GetProperties(GetSafeTile(globalX, globalY, currentTileId)).blendPriority;
+            int pN = TileRegistry::Instance().GetProperties(GetSafeTile(globalX, globalY - 1, currentTileId)).blendPriority;
             int pS = TileRegistry::Instance().GetProperties(GetSafeTile(globalX, globalY + 1, currentTileId)).blendPriority;
             int pW = TileRegistry::Instance().GetProperties(GetSafeTile(globalX - 1, globalY, currentTileId)).blendPriority;
             int pE = TileRegistry::Instance().GetProperties(GetSafeTile(globalX + 1, globalY, currentTileId)).blendPriority;
@@ -126,9 +126,9 @@ void MapRenderer::RebuildChunkGeometry(int cx, int cy, const Map& map) {
 
             // Apply direct orthogonal drop shadows (0.68 multiplier creates rich, distinct edge tracking)
             if (pN > currentPriority) { tlShadow *= 0.68; trShadow *= 0.68; }
-            if (pN > currentPriority) { blShadow *= 0.68; brShadow *= 0.68; }
-            if (pN > currentPriority) { tlShadow *= 0.68; blShadow *= 0.68; }
-            if (pN > currentPriority) { trShadow *= 0.68; brShadow *= 0.68; }
+            if (pS > currentPriority) { blShadow *= 0.68; brShadow *= 0.68; }
+            if (pW > currentPriority) { tlShadow *= 0.68; blShadow *= 0.68; }
+            if (pE > currentPriority) { trShadow *= 0.68; brShadow *= 0.68; }
 
             // Apply subtler ambient corner occlusion from diagonal elements (0.82 multiplier)
             if (pNW > currentPriority) tlShadow *= 0.82;

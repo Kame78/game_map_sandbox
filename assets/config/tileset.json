@@ -24,7 +24,6 @@
     { "name": "rocky_mountains","min_elev": 0.60, "max_elev": 0.68, "min_moist": 0.42, "max_moist": 1.00, "material": "chiseled_stone" },
     { "name": "frozen_tundra",  "min_elev": 0.68, "max_elev": 1.00, "min_moist": 0.42, "max_moist": 1.00, "material": "powder_snow" }
   ],
-
   "materials": [
     {
       "id": "clear_water",
@@ -39,13 +38,25 @@
       }
     },
     {
+      "id": "shallow_water",
+      "texture_path": "assets/tilesets/water.png",
+      "tile_size": 32,
+      "layout_profile": "tilesetter_47_blob",
+      "properties": {
+        "is_solid": false,
+        "blend_priority": 1,
+        "footstep_type": "water_wade",
+        "speed_modifier": 0.4
+      }
+    },
+    {
       "id": "pale_sand",
       "texture_path": "assets/tilesets/sand.png",
       "tile_size": 32,
       "layout_profile": "tilesetter_47_blob",
       "properties": {
         "is_solid": false,
-        "blend_priority": 1,
+        "blend_priority": 2,
         "footstep_type": "sand",
         "speed_modifier": 0.9
       }
@@ -57,7 +68,7 @@
       "layout_profile": "tilesetter_47_blob",
       "properties": {
         "is_solid": false,
-        "blend_priority": 2,
+        "blend_priority": 3,
         "footstep_type": "dirt",
         "speed_modifier": 1.0
       }
@@ -69,9 +80,21 @@
       "layout_profile": "tilesetter_47_blob",
       "properties": {
         "is_solid": false,
-        "blend_priority": 3,
+        "blend_priority": 4,
         "footstep_type": "grass",
         "speed_modifier": 1.0
+      }
+    },
+    {
+      "id": "stone_cliff",
+      "texture_path": "assets/tilesets/stone_cliff.png",
+      "tile_size": 32,
+      "layout_profile": "tilesetter_47_blob",
+      "properties": {
+        "is_solid": true,
+        "blend_priority": 5,
+        "footstep_type": "stone",
+        "speed_modifier": 0.0
       }
     },
     {
@@ -80,8 +103,8 @@
       "tile_size": 32,
       "layout_profile": "tilesetter_47_blob",
       "properties": {
-        "is_solid": true,
-        "blend_priority": 4,
+        "is_solid": false,
+        "blend_priority": 6,
         "footstep_type": "stone",
         "speed_modifier": 1.0
       }
@@ -93,7 +116,7 @@
       "layout_profile": "tilesetter_47_blob",
       "properties": {
         "is_solid": false,
-        "blend_priority": 5,
+        "blend_priority": 7,
         "footstep_type": "snow",
         "speed_modifier": 0.8
       }

@@ -59,6 +59,8 @@ void WorldGenerator::Generate(Map& map, unsigned int seed) {
             }
         }
     }
+    std::cout << "[WorldGenerator] Injecting vertical cliff faces and height steps...\n";
+    GenerateCliffs(map);
 
     std::cout << "[WorldGenerator] Simulating hydraulic erosion pathways...\n";
     std::shuffle(mountainSprings.begin(), mountainSprings.end(), std::mt19937(seed));
@@ -160,6 +162,41 @@ void WorldGenerator::Generate(Map& map, unsigned int seed) {
                     map.SetTile(x, y, selectedId);
                     map.SetTile(x, y + 1, selectedId);
                     cooldownCounter = 0;
+                }
+            }
+        }
+    }
+
+    void WorldGenerator::GenerateCliffs(Map& map) {
+        TileRuntimeId stoneId = TileRegistry::Instance().GetId("chiseled_stone");
+        TileRuntimeId cliffId = TileRegistry::Instance().GetId("stone_cliff");
+
+        int width = map.GetWidth();
+        int height = map.GetHeight();
+
+        std::vector<TileRuntimeId> cliffBuffer(width * height, 0);
+
+        for (int y = 1; y < height - 1; ++y) {
+            for(int x = 1; x < width - 1; ++x) {
+                TileRuntimeId current = map.GetTile(x, y);
+                if (current != stoneId) continue;
+
+                // Inspect the 4 cardinal directions for any tile that isn't a mountain ridge
+
+                bool lowerS = (map.GetTile(x, y + 1) != stoneId && map.GetTile(x, y + 1) != cliffId);
+                bool lowerN = (map.GetTile(x, y - 1) != stoneId && map.GetTile(x, y - 1) != cliffId);
+                bool lowerW = (map.GetTile(x - 1, y) != stoneId && map.GetTile(x - 1, y) != cliffId);
+                bool lowerE = (map.GetTile(x + 1, y) != stoneId && map.GetTile(x + 1, y) != cliffId);
+
+                if (lowerS || lowerN || lowerW || lowerE) {
+                    cliffBuffer[y * width + x] = cliffId;
+                }
+            }
+        }
+        for (int y = 1; y < height - 1; ++y) {
+            for (int x = 1; x < width - 1; ++x) {
+                if(cliffBuffer[y * width + x] == cliffId) {
+                    map.SetTile(x, y, cliffId);
                 }
             }
         }
