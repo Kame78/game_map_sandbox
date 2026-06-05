@@ -1,6 +1,11 @@
 #include "map_renderer.hpp"
 #include "tile_registry.hpp"
+#include "world_generator.hpp"
+#include <nlohmann/json.hpp>
 #include <iostream>
+#include <fstream>
+
+
 
 bool MapRenderer::ConnectsTo(TileRuntimeId currentId, TileRuntimeId neighborId) {
     if (currentId == neighborId) return true;
@@ -244,3 +249,59 @@ void MapRenderer::Draw(sf::RenderTarget& target, const sf::RenderStates states) 
         }
     }
 }
+
+bool MapRenderer::LoadSpriteAtlas(const std::string& configPath) {
+    std::ifstream file(configPath);
+    if(!file.is_open()) {
+        std::cerr << "[Renderer] Error: Unable to locate sprite config" << configPath << '\n';
+        return false;
+    }
+    nlohmann::json data;
+    file >> data;
+
+    std::string atlasPath = data.value("texture_path", "");
+    if(!m_vegetationAtlasTexture.loadFromFile(atlasPath)) {
+        std::cerr << "[Renderer] Asset Error: Failed to compile atlas sheet texture: " <<  atlasPath << "\n";
+        return false;
+    }
+
+    m_spriteAtlas.clear();
+    if(data.contains("sprites")) {
+        for(const auto& [name, rectJson] : data["sprites"].items()) {
+            AtlasRect frame;
+            frame.x = rectJson.value("x", 0);
+            frame.y = rectJson.value("y", 0);
+            frame.w = rectJson.value("w", 32);
+            frame.h = rectJson.value("h", 32);
+            m_spriteAtlas[name] = frame;
+
+        }
+    }
+    std::cout << "[Renderer] Successfully mapped " << m_spriteAtlas.size() << " non-uniform atlas frames into visual memory.\n";
+    return true;
+}
+
+
+void MapRenderer::DrawDecorations(sf::RenderTarget& target, const std::vector<PlacedDecoration>& decorations, const Map& map) const {
+        float fallbackTileSize = static_cast<float>(map.GetTileSize());
+
+        sf::Sprite renderSprite(m_vegetationAtlasTexture);
+
+        for (const auto& deco : decorations) {
+            auto it = m_spriteAtlas.find(deco.spriteKey);
+            if(it == m_spriteAtlas.end()) continue;
+
+            const AtlasRect& frame = it->second;
+
+            renderSprite.setTextureRect(sf::IntRect({frame.x, frame.y}, {frame.w, frame.h}));
+
+            renderSprite.setOrigin({static_cast<float>(frame.w) / 2.0f, static_cast<float>(frame.h)});
+            
+            float screenX = (static_cast<float>(deco.gridX) * fallbackTileSize) + (fallbackTileSize / 2.0f);
+            float screenY = (static_cast<float>(deco.gridY) * fallbackTileSize) + fallbackTileSize;
+
+            renderSprite.setPosition({screenX, screenY});
+
+            target.draw(renderSprite);
+        }
+    }

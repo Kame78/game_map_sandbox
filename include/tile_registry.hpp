@@ -34,13 +34,20 @@ struct BiomeRule {
     TileRuntimeId materialId = 0;
 };
 
+struct VegatationRule {
+    std::string biomeName;
+    TileRuntimeId spawnOnMaterialId = 0;
+    double spawnChance = 0.0;
+    std::vector<std::string> decorationIds;
+};
+
 class TileRegistry {
 private:
     std::vector<TileProperties> m_registry;
     std::unordered_map<std::string, TileRuntimeId> m_nameToIdMap;
     std::unordered_map<std::string, std::unordered_map<int, GridLocation>> m_layoutProfiles;
-
     std::vector<BiomeRule> m_biomeRules;
+    std::vector<VegatationRule> m_vegetationRules;
 
     TileRegistry() = default;  //Private contructor for Singleton
 
@@ -55,5 +62,8 @@ const TileProperties& GetProperties(TileRuntimeId id) const;
 GridLocation GetAutotileLocation(const std::string& profile, int bitmask) const;
 
 const std::vector<BiomeRule>& GetBiomeRules() const { return m_biomeRules; }
+
+const std::vector<VegatationRule>& GetVegetationRules() const noexcept { return m_vegetationRules; }
 };
+
 

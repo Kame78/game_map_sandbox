@@ -20,6 +20,12 @@ int main() {
     Map map(1000,1000);
     Player player;
     MapRenderer mapRenderer;
+    WorldGenerator generator;
+
+    if (!mapRenderer.Initialize() || !mapRenderer.LoadSpriteAtlas("assets/config/sprites.json")) {
+        std::cerr << "Pipeline Error: Failed to launch asset graphics cache!\n";
+        return -1;
+    }
 
     std::ifstream testFile("saved_map.dat");
     if (testFile.is_open()) {
@@ -32,7 +38,6 @@ int main() {
         player.Spawn(startX, startY, 32.f);
         std::cout << "Loaded existing world state. Spawning player at (" << startX << ", " << startY << ")\n";
     } else {
-       WorldGenerator generator;
        generator.Generate(map, 424242);
     
     for (int y = 1; y < map.GetHeight(); ++y) {
@@ -49,15 +54,11 @@ int main() {
         std::cout << "No save file found. Generated fresh world and found a default spawn point.\n";
     }
 
-    if (!mapRenderer.Initialize()) {
-        std::cerr << "PipeLine Error: Failed to launch asset graphics cache!\n";
-        return -1;
-    }
-
     mapRenderer.RegenarateAllGeometry(map);
 
     WorldEditor editor;
     sf::View camera(sf::FloatRect({0.f, 0.f}, {1280.f, 720.f}));
+    camera.zoom(0.75f);
 
     while (window.isOpen()) {
         while (const std::optional<sf::Event> event = window.pollEvent()) {
@@ -72,6 +73,7 @@ int main() {
     window.clear(sf::Color(25, 25, 25));
     window.setView(camera);
     mapRenderer.Draw(window, sf::RenderStates::Default);
+    mapRenderer.DrawDecorations(window, generator.GetDecorations(), map);
     window.draw(player);
     window.display();
     }

@@ -1,0 +1,17 @@
+{
+  "texture_path": "assets/sprites/spritesheet.png",
+  "sprites": {
+    "bush_blue_flowers":   { "x": 6,   "y": 7,   "w": 68,  "h": 51  },
+    "bush_red_flowers":    { "x": 6,   "y": 65,  "w": 68,  "h": 55  },
+    "bush_pink_flowers":   { "x": 7,   "y": 125, "w": 65,  "h": 53  },
+    "bush_yellow_flowers": { "x": 8,   "y": 185, "w": 63,  "h": 48  },
+    "bush":                { "x": 14,  "y": 249, "w": 48,  "h": 48  },
+    "grass_long_dark":     { "x": 89,  "y": 0,   "w": 36,  "h": 41  },
+    "grass_med_dark":      { "x": 130, "y": 0,   "w": 32,  "h": 41  },
+    "grass_short_dark":    { "x": 164, "y": 10,  "w": 38,  "h": 32  },
+    "tree_evergreen":      { "x": 207, "y": 0,   "w": 60,  "h": 90  },
+    "tree_round":          { "x": 268, "y": 0,   "w": 67,  "h": 87  },
+    "tree_normal":         { "x": 335, "y": 0,   "w": 101, "h": 114 },
+    "rock":                { "x": 578, "y": 276, "w": 45,  "h": 34  }
+  }
+}

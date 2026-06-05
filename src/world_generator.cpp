@@ -74,6 +74,9 @@ void WorldGenerator::Generate(Map& map, unsigned int seed) {
 
         std::cout << "[WorldGenerator] Stitching infrastructure crossing meshes...\n";
         GenerateCrossings(map, 120);
+
+        std::cout << "[WorldGenerator] Sprouting regional vegetation and canopy layers...\n";
+        DistributeVegetation(map);
     }
 
 
@@ -201,3 +204,41 @@ void WorldGenerator::Generate(Map& map, unsigned int seed) {
             }
         }
     }
+
+    void WorldGenerator::DistributeVegetation(Map& map){
+        m_decorations.clear();
+
+        int width = map.GetWidth();
+        int height = map.GetHeight();
+
+        std::random_device rd;
+        std::mt19937 rng(rd());
+        std::uniform_real_distribution<double> roll(0.0, 1.0);
+
+        const auto& vegRules = TileRegistry::Instance().GetVegetationRules();
+
+        for (int y = 2; y < height - 2; ++y) {
+        for (int x = 2; x < width - 2; ++x) {
+            TileRuntimeId groundTile = map.GetTile(x, y);
+
+            if (groundTile == TileRegistry::Instance().GetId("clear_water") ||
+                groundTile == TileRegistry::Instance().GetId("shallow_water") ||
+                groundTile == TileRegistry::Instance().GetId("wooden_bridge") ||
+                groundTile == TileRegistry::Instance().GetId("stone_cliff")) 
+                { continue; }
+
+            for (const auto& rule : vegRules) {
+                if(groundTile == rule.spawnOnMaterialId) {
+                    if(roll(rng) < rule.spawnChance) {
+                        std::uniform_int_distribution<size_t> indexRoll(0, rule.decorationIds.size() - 1);
+                        std::string chosenSpriteKey = rule.decorationIds[indexRoll(rng)];
+
+                        m_decorations.push_back({chosenSpriteKey, x, y});
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    std::cout << "[WorldGenerator] Procedurally populated " << m_decorations.size() << " macro decorations across biomes.\n";
+}

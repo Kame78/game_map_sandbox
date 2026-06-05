@@ -75,7 +75,28 @@ bool TileRegistry::Initialize(const std::string& configPath) {
         }
     }
 
-    std::cout << "[Registry] Successfully initialized " << m_registry.size() << " materials\n";
+    if (data.contains("vegetation_rules")) {
+        for (const auto& vegJson : data["vegetation_rules"]) {
+            VegatationRule rule;
+            rule.biomeName = vegJson.value("biome_name", "unknown_flora");
+            rule.spawnChance = vegJson.value("spawn_chance", 0.5);
+
+            std::string spawnTarget = vegJson.value("spawn_on", "");
+            rule.spawnOnMaterialId = GetId(spawnTarget);
+
+            if (vegJson.contains("decorations")) {
+                for (const auto& itemStr : vegJson["decorations"]) {
+                        rule.decorationIds.push_back(itemStr);
+                }
+            }
+            if (rule.spawnOnMaterialId != 0 && !rule.decorationIds.empty()) {
+                m_vegetationRules.push_back(rule);
+            }
+         }
+    }
+
+    std::cout << "[Registry] Successfully initialized " << m_registry.size() << " materials"
+    << m_biomeRules.size() << " biomes, and " << m_vegetationRules.size() << " foliage matrices.\n";
     return true;
 }
 

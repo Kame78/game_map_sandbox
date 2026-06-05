@@ -44,7 +44,7 @@
       "layout_profile": "tilesetter_47_blob",
       "properties": {
         "is_solid": false,
-        "blend_priority": 1,
+        "blend_priority": 2,
         "footstep_type": "water_wade",
         "speed_modifier": 0.4
       }
@@ -56,7 +56,7 @@
       "layout_profile": "tilesetter_47_blob",
       "properties": {
         "is_solid": false,
-        "blend_priority": 2,
+        "blend_priority": 3,
         "footstep_type": "sand",
         "speed_modifier": 0.9
       }
@@ -68,7 +68,7 @@
       "layout_profile": "tilesetter_47_blob",
       "properties": {
         "is_solid": false,
-        "blend_priority": 3,
+        "blend_priority": 4,
         "footstep_type": "dirt",
         "speed_modifier": 1.0
       }
@@ -80,7 +80,7 @@
       "layout_profile": "tilesetter_47_blob",
       "properties": {
         "is_solid": false,
-        "blend_priority": 4,
+        "blend_priority": 5,
         "footstep_type": "grass",
         "speed_modifier": 1.0
       }
@@ -92,7 +92,7 @@
       "layout_profile": "tilesetter_47_blob",
       "properties": {
         "is_solid": true,
-        "blend_priority": 5,
+        "blend_priority": 1,
         "footstep_type": "stone",
         "speed_modifier": 0.0
       }
@@ -120,6 +120,26 @@
         "footstep_type": "snow",
         "speed_modifier": 0.8
       }
+    }
+  ],
+  "vegetation_rules": [
+    {
+      "biome_name": "lush_grassland_forests",
+      "spawn_on": "medium_grass_standard",
+      "spawn_chance": 0.06,
+      "decorations": ["tree_normal", "tree_round", "bush", "bush_blue_flowers", "bush_pink_flowers"]
+    },
+    {
+      "biome_name": "weathered_hill_woods",
+      "spawn_on": "coarse_dirt",
+      "spawn_chance": 0.03,
+      "decorations": ["tree_evergreen", "bush_red_flowers", "bush_yellow_flowers", "rock"]
+    },
+    {
+      "biome_name": "alpine_tundra_fringe",
+      "spawn_on": "powder_snow",
+      "spawn_chance": 0.02,
+      "decorations": ["tree_evergreen", "rock"]
     }
   ]
 }
