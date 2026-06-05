@@ -3,18 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-TileRegistry::TileRegistry() {
-    
-    TileProperties defaultProps{
-    .id = 0,
-    .internalName = "fallback_empty",
-    .isSolid = false,
-    .speedModifier = 1.0f,
-    .footstepType = "dirt"
-    };
-    m_registry.push_back(defaultProps);
-    m_nameToIdMap["fallback_empty"] = 0;
-}
 
 bool TileRegistry::Initialize(const std::string& configPath) {
     std::ifstream file(configPath);
@@ -26,43 +14,68 @@ bool TileRegistry::Initialize(const std::string& configPath) {
     nlohmann::json data;
     file >> data;
 
-    for (const auto& sheet : data["sheets"]) {
-        if (!sheet.contains("blocks")) continue;
-
-        for (const auto& block : sheet["blocks"]) {
-            std::string currentBlockId = block.value("id", "UNKNOWN_ID");
-
-            try{
-                TileProperties props;
-                props.id = static_cast<TileRuntimeId>(m_registry.size());
-                props.internalName = currentBlockId;
-                props.startX = block.value("start_x", 0);
-                props.startY = block.value("start_y", 0);
+    m_registry.clear();
+    m_nameToIdMap.clear();
+    m_layoutProfiles.clear();
+    m_biomeRules.clear();
 
 
-             if(!block.contains("properties")) {
-                throw std::runtime_error("Missing 'properties' object entirely");
-                }
-            
-                auto propsJson = block["properties"];
-
-            if (!propsJson.contains("is_solid")) {
-                throw std::runtime_error("Missing 'is_solid' key inside 'properties");
-            }
-            props.isSolid = propsJson["is_solid"].get<bool>();
-            props.speedModifier = propsJson.value("speed_modifier", 1.0f);
-            props.footstepType = propsJson.value("footstep_type", "dirt");
-
-            m_registry.push_back(props);
-            m_nameToIdMap[props.internalName] = props.id;
-            }
-            catch (const std::exception& e) {
-                std::cerr << "Config Parsing Error\n" << "Tile Block ID: " << currentBlockId << "\n" << "Reason: " << e.what() << "'\n";
-                return false;
+    if (data.contains("autotile_layouts")) {
+        for (auto& [profileName, profileData] : data["autotile_layouts"].items()) {
+            auto& bitmaskMap = m_layoutProfiles[profileName];
+            for (auto& [bitmaskStr, locJson] : profileData["bitmask_mappings"].items()) {
+                int bitmask = std::stoi(bitmaskStr);
+                bitmaskMap[bitmask] = {locJson["col"], locJson["row"]};
             }
         }
     }
-    std::cout << "TileRegistry successfully initialized. Loaded " << m_registry.size() - 1 << "custom assets.\n";
+    if (data.contains("materials")) {
+        for (const auto& matJson : data["materials"]) {
+            TileProperties props;
+            props.id = static_cast<TileRuntimeId>(m_registry.size());
+            props.internalName = matJson.value("id", "unknown");
+            props.texturePath = matJson.value("texture_path", "");
+            props.tileSize = matJson.value("tile_size", 32);
+            props.layoutProfile = matJson.value("layout_profile", "none");
+
+            if(matJson.contains("properties")) {
+                auto pJson = matJson["properties"];
+                props.isSolid = pJson.value("is_solid", false);
+                props.blendPriority = pJson.value("blend_priority", 0);
+                props.footstepType = pJson.value("footstep_type", "dirt");
+                props.speedModifier = pJson.value("speed_modifier", 1.0f);
+            }
+
+            m_registry.push_back(props);
+            m_nameToIdMap[props.internalName] = props.id;
+
+        }
+    }
+
+    if (data.contains("biome_rules")) {
+        for(const auto& ruleJson : data["biome_rules"]) {
+            BiomeRule rule;
+            rule.name = ruleJson.value("name", "unknown_name");
+            rule.minElevation = ruleJson.value("min_elev", 0.0);
+            rule.maxElevation = ruleJson.value("max_elev", 1.0);
+            rule.minMoisture = ruleJson.value("min_moist", 0.0);
+            rule.maxMoisture = ruleJson.value("max_moist", 1.0);
+
+            std::string targetMaterial = ruleJson.value("material", "clear_water");
+            rule.materialId = GetId(targetMaterial);
+
+            if (rule.materialId == 0 && targetMaterial != "clear_water") {
+                std::cerr << "\n[Registry] FATAL CONFIG ERROR: Biome Rule '" << rule.name
+                          <<"' targets an unrecognized material token string: '" << targetMaterial << "'\n"
+                          << "Verify that your spelling matches your materials block configuration fields exactly!\n\n";
+                return false;
+            }
+
+            m_biomeRules.push_back(rule);
+        }
+    }
+
+    std::cout << "[Registry] Successfully initialized " << m_registry.size() << " materials\n";
     return true;
 }
 
@@ -73,9 +86,18 @@ TileRuntimeId TileRegistry::GetId(const std::string& name) const {
 
 const TileProperties& TileRegistry::GetProperties(TileRuntimeId id) const {
     if (id >= m_registry.size()) { return m_registry[0]; }
-    
     return m_registry[id];
-   
+}
+
+GridLocation TileRegistry::GetAutotileLocation(const std::string& profile, int bitmask) const {
+    auto pIt = m_layoutProfiles.find(profile);
+    if (pIt != m_layoutProfiles.end()) {
+        auto bIt = pIt->second.find(bitmask);
+        if (bIt != pIt->second.end()) {
+            return bIt->second;
+        }
+    }
+    return GridLocation{0, 0};
 }
 
 

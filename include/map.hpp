@@ -21,10 +21,6 @@ private:
 public:
     Map(int width, int height);
 
-    void Randomize(int fillPercentage);
-    void StepSimulation();
-    int CountActiveNeighbors(int x, int y) const;
-
     int GetWidth() const{ return m_width; }
     int GetHeight() const{ return m_height; }
     int GetChunkSize() const {return CHUNK_SIZE;}
@@ -33,7 +29,6 @@ public:
     int GetNumChunksY() const {return m_numChunksY;}
 
 
-    void PrintToConsole() const;
     void SaveToFile(const std::string& filepath, int playerX, int playerY) const;
     void LoadFromFile(const std::string& filepath, int& outPlayerX, int& outPlayerY);
 

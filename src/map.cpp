@@ -22,7 +22,7 @@ Map::Map(int width, int height)
        
  TileRuntimeId Map::GetTile(int x, int y) const {
     if ( x < 0 || x >= m_width || y < 0 || y >= m_height) {
-        return TileRegistry::Instance().GetId("chiseled_stone_dark_edges");
+        return TileRegistry::Instance().GetId("clear_water");
     }
 
     int cx = x / CHUNK_SIZE;
@@ -42,71 +42,6 @@ Map::Map(int width, int height)
     m_chunks[cy * m_numChunksX + cx].SetTile(x % CHUNK_SIZE, y % CHUNK_SIZE, typeId);
  }
  
- void Map::Randomize(int fillPercentage) {
-    std::random_device rd;
-    std::mt19937 prng(rd());
-    std::uniform_int_distribution<int> dist(0, 100);
-
-    TileRuntimeId wallId = TileRegistry::Instance().GetId("chiseled_stone_dark_edges");
-    TileRuntimeId floorId = TileRegistry::Instance().GetId("medium_grass_standard");
-
-    for (int y = 0; y < m_height; ++y) {
-        for (int x = 0; x < m_width; ++x) {
-            if(x == 0 || x == m_width - 1 || y == 0 || y == m_height - 1 ) {
-                SetTile(x, y, wallId);
-            } else{
-                TileRuntimeId chosenId = (dist(prng) < fillPercentage) ? wallId : floorId;
-                SetTile(x, y, chosenId);
-            }
-        }
-    }
-}
-
-int Map::CountActiveNeighbors(int x, int y) const {
-    int wallCount = 0;
-
-    for (int neighborY = y -1; neighborY <= y + 1; ++neighborY) {
-        for (int neighborX = x - 1; neighborX <= x + 1; ++neighborX) {
-            if (neighborX == x && neighborY == y) continue;
-
-            TileRuntimeId id = GetTile(neighborX, neighborY);
-            if (TileRegistry::Instance().GetProperties(id).isSolid) {
-                ++wallCount;
-            }
-        }
-    }
-    return wallCount;
-}
-
-void Map::StepSimulation() {
-    std::vector<TileRuntimeId> nextGrid(m_width * m_height, 0);
-    TileRuntimeId wallId = TileRegistry::Instance().GetId("chiseled_stone_dark_edges");
-    TileRuntimeId floorId = TileRegistry::Instance().GetId("medium_grass_standard");
-
-
-    for (int y = 0; y < m_height; ++y) {
-        for (int x = 0; x < m_width; ++x) {
-            if ( x == 0 || x == m_width - 1 || y == 0 || y == m_height - 1) {
-                nextGrid[y * m_width + x] = wallId;
-                continue;
-            }
-            int neighbors = CountActiveNeighbors(x, y);
-            bool standsAsSolid = (TileRegistry::Instance().GetProperties(GetTile(x, y)).isSolid);
-            
-            if (standsAsSolid) {
-                nextGrid[y * m_width + x] = (neighbors >= 4) ? wallId : floorId;
-            } else {
-                nextGrid[y * m_width + x] = (neighbors >= 5) ? wallId : floorId;
-            }
-        }
-    }
-    for (int y = 0; y < m_height; ++y) {
-        for (int x = 0; x < m_width; ++x) {
-            SetTile(x, y, nextGrid[y * m_width + x]);
-        }
-    }
-}
-
 void Map::SaveToFile(const std::string& filepath, int playerX, int playerY) const {
     std::ofstream out(filepath, std::ios::binary);
 

@@ -1,144 +1,102 @@
 {
-  "engine_config": {
-    "base_tile_size": 32,
-    "sub_tile_size": 16
+  "autotile_layouts": {
+    "tilesetter_47_blob": {
+      "grid_dimensions": { "cols": 8, "rows": 6 },
+      "bitmask_mappings": {
+        "0":   { "col": 0, "row": 0 }, "1":   { "col": 1, "row": 0 }, "2":   { "col": 2, "row": 0 }, "3":   { "col": 3, "row": 0 }, "35":  { "col": 4, "row": 0 }, "4":   { "col": 5, "row": 0 }, "5":   { "col": 6, "row": 0 }, "6":   { "col": 7, "row": 0 },
+        "70":  { "col": 0, "row": 1 }, "7":   { "col": 1, "row": 1 }, "71":  { "col": 2, "row": 1 }, "39":  { "col": 3, "row": 1 }, "103": { "col": 4, "row": 1 }, "8":   { "col": 5, "row": 1 }, "9":   { "col": 6, "row": 1 }, "25":  { "col": 7, "row": 1 },
+        "10":  { "col": 0, "row": 2 }, "11":  { "col": 1, "row": 2 }, "43":  { "col": 2, "row": 2 }, "27":  { "col": 3, "row": 2 }, "59":  { "col": 4, "row": 2 }, "12":  { "col": 5, "row": 2 }, "140": { "col": 6, "row": 2 }, "13":  { "col": 7, "row": 2 },
+        "141": { "col": 0, "row": 3 }, "29":  { "col": 1, "row": 3 }, "157": { "col": 2, "row": 3 }, "14":  { "col": 3, "row": 3 }, "142": { "col": 4, "row": 3 }, "78":  { "col": 5, "row": 3 }, "206": { "col": 6, "row": 3 }, "15":  { "col": 7, "row": 3 },
+        "143": { "col": 0, "row": 4 }, "79":  { "col": 1, "row": 4 }, "207": { "col": 2, "row": 4 }, "47":  { "col": 3, "row": 4 }, "175": { "col": 4, "row": 4 }, "111": { "col": 5, "row": 4 }, "239": { "col": 6, "row": 4 }, "31":  { "col": 7, "row": 4 },
+        "159": { "col": 0, "row": 5 }, "95":  { "col": 1, "row": 5 }, "223": { "col": 2, "row": 5 }, "63":  { "col": 3, "row": 5 }, "191": { "col": 4, "row": 5 }, "127": { "col": 5, "row": 5 }, "255": { "col": 6, "row": 5 }
+      }
+    }
   },
-  "sheets": [
+  "biome_rules": [
+    { "name": "deep_ocean",     "min_elev": 0.00, "max_elev": 0.42, "min_moist": 0.00, "max_moist": 1.00, "material": "clear_water" },
+    { "name": "coastal_beach",  "min_elev": 0.42, "max_elev": 0.45, "min_moist": 0.00, "max_moist": 1.00, "material": "pale_sand" },
+    
+    { "name": "arid_desert",    "min_elev": 0.45, "max_elev": 0.60, "min_moist": 0.00, "max_moist": 0.38, "material": "pale_sand" },
+    { "name": "meadow_dirt",    "min_elev": 0.45, "max_elev": 0.60, "min_moist": 0.38, "max_moist": 0.48, "material": "coarse_dirt" },
+    { "name": "lush_grassland", "min_elev": 0.45, "max_elev": 0.60, "min_moist": 0.48, "max_moist": 1.00, "material": "medium_grass_standard" },
+    
+    { "name": "weathered_hills","min_elev": 0.60, "max_elev": 1.00, "min_moist": 0.00, "max_moist": 0.42, "material": "coarse_dirt" },
+    { "name": "rocky_mountains","min_elev": 0.60, "max_elev": 0.68, "min_moist": 0.42, "max_moist": 1.00, "material": "chiseled_stone" },
+    { "name": "frozen_tundra",  "min_elev": 0.68, "max_elev": 1.00, "min_moist": 0.42, "max_moist": 1.00, "material": "powder_snow" }
+  ],
+
+  "materials": [
     {
-      "file_path": "assets/tilesets/earth.png",
-      "type": "terrain_autotile",
-      "sheet_width": 576,
-      "sheet_height": 1024,
-      "block_width": 288,
-      "block_height": 256,
-      "blocks": [
-        {
-          "id": "dark_coarse_dirt",
-          "start_x": 0,
-          "start_y": 0,
-          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "dirt" }
-        },
-        {
-          "id": "medium_coarse_dirt",
-          "start_x": 288,
-          "start_y": 0,
-          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "dirt" }
-        },
-        {
-          "id": "charcoal_earth",
-          "start_x": 0,
-          "start_y": 256,
-          "properties": { "is_solid": false, "speed_modifier": 0.9, "footstep_type": "gravel" }
-        },
-        {
-          "id": "clay_mud",
-          "start_x": 288,
-          "start_y": 256,
-          "properties": { "is_solid": false, "speed_modifier": 0.5, "footstep_type": "mud" }
-        },
-        {
-          "id": "pale_sand",
-          "start_x": 0,
-          "start_y": 512,
-          "properties": { "is_solid": false, "speed_modifier": 0.7, "footstep_type": "sand" }
-        },
-        {
-          "id": "tan_dry_dirt",
-          "start_x": 288,
-          "start_y": 512,
-          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "dirt" }
-        },
-        {
-          "id": "bronze_clay",
-          "start_x": 0,
-          "start_y": 768,
-          "properties": { "is_solid": false, "speed_modifier": 0.9, "footstep_type": "dirt" }
-        },
-        {
-          "id": "rich_brown_loam",
-          "start_x": 288,
-          "start_y": 768,
-          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "grass" }
-        }
-      ]
+      "id": "clear_water",
+      "texture_path": "assets/tilesets/water.png",
+      "tile_size": 32,
+      "layout_profile": "tilesetter_47_blob",
+      "properties": {
+        "is_solid": true,
+        "blend_priority": 0,
+        "footstep_type": "water",
+        "speed_modifier": 0.6
+      }
     },
     {
-      "file_path": "assets/tilesets/grass_medium.png",
-      "type": "terrain_autotile",
-      "sheet_width": 864,
-      "sheet_height": 416,
-      "block_width": 288,
-      "block_height": 256,
-      "blocks": [
-        {
-          "id": "medium_grass_thick_hedges",
-          "start_x": 0,
-          "start_y": 96,
-          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "grass" }
-        },
-        {
-          "id": "medium_grass_standard",
-          "start_x": 288,
-          "start_y": 96,
-          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "grass" }
-        },
-        {
-          "id": "medium_grass_bushy_edges",
-          "start_x": 576,
-          "start_y": 96,
-          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "grass" }
-        }
-      ]
+      "id": "pale_sand",
+      "texture_path": "assets/tilesets/sand.png",
+      "tile_size": 32,
+      "layout_profile": "tilesetter_47_blob",
+      "properties": {
+        "is_solid": false,
+        "blend_priority": 1,
+        "footstep_type": "sand",
+        "speed_modifier": 0.9
+      }
     },
     {
-      "file_path": "assets/tilesets/stone.png",
-      "type": "full_47_autotile",
-      "sheet_width": 272,
-      "sheet_height": 320,
-      "block_width": 272,
-      "block_height": 160,
-      "blocks": [
-        {
-          "id": "chiseled_stone_dark_edges",
-          "start_x": 0,
-          "start_y": 0,
-          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "stone" }
-        },
-        {
-          "id": "smooth_stone_cobble",
-          "start_x": 0,
-          "start_y": 160,
-          "properties": { "is_solid": false, "speed_modifier": 1.0, "footstep_type": "stone" }
-        }
-      ]
+      "id": "coarse_dirt",
+      "texture_path": "assets/tilesets/dirt.png",
+      "tile_size": 32,
+      "layout_profile": "tilesetter_47_blob",
+      "properties": {
+        "is_solid": false,
+        "blend_priority": 2,
+        "footstep_type": "dirt",
+        "speed_modifier": 1.0
+      }
     },
     {
-      "file_path": "assets/tilesets/water.png",
-      "type": "terrain_autotile",
-      "sheet_width": 96,
-      "sheet_height": 192,
-      "block_width": 96,
-      "block_height": 64,
-      "blocks": [
-        {
-          "id": "water_shallow_shore",
-          "start_x": 0,
-          "start_y": 0,
-          "properties": { "is_solid": false, "is_swimmable": true, "depth_level": 1, "footstep_type": "wade" }
-        },
-        {
-          "id": "water_medium_depth",
-          "start_x": 0,
-          "start_y": 64,
-          "properties": { "is_solid": false, "is_swimmable": true, "depth_level": 2, "footstep_type": "splash" }
-        },
-        {
-          "id": "water_deep_ocean",
-          "start_x": 0,
-          "start_y": 128,
-          "properties": { "is_solid": true, "is_swimmable": false, "depth_level": 3, "footstep_type": "none" }
-        }
-      ]
+      "id": "medium_grass_standard",
+      "texture_path": "assets/tilesets/grass.png",
+      "tile_size": 32,
+      "layout_profile": "tilesetter_47_blob",
+      "properties": {
+        "is_solid": false,
+        "blend_priority": 3,
+        "footstep_type": "grass",
+        "speed_modifier": 1.0
+      }
+    },
+    {
+      "id": "chiseled_stone",
+      "texture_path": "assets/tilesets/stone.png",
+      "tile_size": 32,
+      "layout_profile": "tilesetter_47_blob",
+      "properties": {
+        "is_solid": true,
+        "blend_priority": 4,
+        "footstep_type": "stone",
+        "speed_modifier": 1.0
+      }
+    },
+    {
+      "id": "powder_snow",
+      "texture_path": "assets/tilesets/snow.png",
+      "tile_size": 32,
+      "layout_profile": "tilesetter_47_blob",
+      "properties": {
+        "is_solid": false,
+        "blend_priority": 5,
+        "footstep_type": "snow",
+        "speed_modifier": 0.8
+      }
     }
   ]
 }

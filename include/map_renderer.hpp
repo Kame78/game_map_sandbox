@@ -9,30 +9,24 @@
 class MapRenderer {
 private:
     struct RenderChunk {
-        sf::VertexArray baseLayerVerticies;
-        sf::VertexArray aplhaLayerVerticies;
+        std::unordered_map<std::string, sf::VertexArray> baseLayers;
+        std::unordered_map<std::string, sf::VertexArray> alphaLayers;
 };
 
-    sf::Texture m_masterTilesetTexture;
-
+    std::unordered_map<std::string, sf::Texture> m_textureCache;
+    
     int m_numChunksX{};
     int m_numChunksY{};
     std::vector<RenderChunk> m_renderChunks;
 
     void RebuildChunkGeometry(int cx, int cy, const Map& map);
 
-    void BuildSubTileQuad(sf::VertexArray& va, float screenX, float screenY, int subX, int subY, sf::Vector2i atlasSource);
-    void BuildFullTile(sf::VertexArray& va, float screenX, float screenY, int bitmaskValue, sf::Vector2i atlasSource);
-
 public:
 
     MapRenderer() = default;
 
-    bool LoadTextures(const std::string& combinedTexturePath);
-
-    bool Initialize(const std::string& configJsonPath);
-
+    bool Initialize();
     void RegenarateAllGeometry(const Map& map);
-
     void Draw(sf::RenderTarget& target, const sf::RenderStates states) const;
+    bool ConnectsTo(TileRuntimeId currentId, TileRuntimeId neighborId);
 };
